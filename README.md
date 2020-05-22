@@ -1,4 +1,4 @@
-# gcs_synapse_sync
+# gcs-synapse-sync
 
 Google Cloud Function code to index files in GCS bucket by creating filehandles on Synapse, triggered by file changes to bucket.
 
