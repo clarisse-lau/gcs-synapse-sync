@@ -12,13 +12,12 @@ Google Cloud Function code to index files in GCS bucket by creating filehandles 
 ### gcloud CLI tool
 1. Enable the [Cloud Functions API](https://console.cloud.google.com/flows/enableapi?apiid=cloudfunctions&redirect=https://cloud.google.com/functions/quickstart&_ga=2.118113162.2081301619.1590113168-88580457.1590113168)
 2. Initialize the [Cloud SDK](https://cloud.google.com/sdk/docs)
-3. Edit `.env.yaml` to set environment variables:
+3. Clone this repository, and edit `.env.yaml` to set environment variables:
     - `username`: Synapse account username 
     - `apiKey`: Synapse API Key, can be found under Settings on Synapse
     - `synapseProjectId`: Synapse ID of project, a unique identifier with the format `syn12345678`
     - `foldersToSync`: Comma separated list of folders in bucket to be synchronized to Synapse
-4. Using the gcloud command-line tool, deploy two functions from the directory containing the function code and dependencies:
-
+4. Change directory to within the repository, and deploy two functions using the gcloud command-line tool:
 ```
 gcloud functions deploy syn_create --runtime python37 --env-vars-file .env.yaml --trigger-resource <TRIGGER_BUCKET_NAME> --trigger-event google.storage.object.finalize
 ```
