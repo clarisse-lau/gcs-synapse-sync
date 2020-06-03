@@ -36,7 +36,7 @@ def syn_create(data, context):
         if file_id != None:
             targetmd5 = syn.get(file_id,downloadFile=False)['md5'];
 
-        # create filehandle if it does not exist in Synapse or if existing file was modified (check md5):
+        # create filehandle if it does not exist in Synapse or if existing file was modified:
         if file_id == None or contentmd5 != targetmd5: 
             size = data['size']
             contentType = data['contentType']
