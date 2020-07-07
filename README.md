@@ -60,8 +60,16 @@ The function source code requires four input variables:
     - `Stage Bucket`: \<your-bucket\>
 9. Under **Advanced Options**, set up your four environment variables
 
+---
+### Sync Existing Files
+To sync files already in a bucket, complete the setup and deployment steps above, then run the following command with your bucket and folder name. This will effectively "touch" all files within that folder and trigger the cloud function to sync the files to Synapse:
 
-## To Test: 
+```
+gsutil cp -r gs://<your-bucket>/<folder-to-sync> gs://<your-bucket>/<folder-to-sync>
+```
+
+---
+### To Test: 
 1. Place a file in one of the folders specified in `foldersToSync` environment variable
 2. Check GC logs to see if the function was triggered and completed successfully
 3. Check Synapse project to see if filehandle was created
