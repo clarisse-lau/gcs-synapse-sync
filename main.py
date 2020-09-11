@@ -29,7 +29,7 @@ def syn_create(data, context):
     if key.split('/')[0] in inclFolders.split(','): 
         filename = os.path.basename(key)
         bucket = data['bucket']
-        project_id = os.environ.get('synapseProjectId','synapseProjectId environment variable is not set.')
+        project_id = os.environ.get('synapseProjectId', 'synapseProjectId environment variable is not set.')
         storage_id = syn.restGET("/projectSettings/"+project_id+"/type/upload")['locations'][0]
         
         parent = get_parent_folder(syn, project_id, key)
@@ -52,7 +52,7 @@ def syn_create(data, context):
                                 'key'         : key,
                                 'storageLocationId': storage_id}
             fileHandle = syn.restPOST('/externalFileHandle/googleCloud', json.dumps(fileHandle), endpoint=syn.fileHandleEndpoint)
-            f = synapseclient.File(parentId=parent, dataFileHandleId=fileHandle['id'], name=filename,synapseStore=False)
+            f = synapseclient.File(parentId=parent, dataFileHandleId=fileHandle['id'], name=filename, synapseStore=False)
             f = syn.store(f)
 
 def syn_delete(data, context):
