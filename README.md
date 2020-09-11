@@ -15,7 +15,9 @@ Google Cloud Function code to index files in GCS bucket by creating filehandles 
 3. Clone this repository, and edit `env.yaml` to set two center-specific environment variables:
     - `synapseProjectId`: Synapse ID of project, a unique identifier with the format `syn12345678`
     - `foldersToSync`: A comma separated list of folders in bucket to be synchronized to Synapse
-    - *`gcProjectName` variable should remain `htan-dcc`*
+
+    *`gcProjectName` variable should remain `htan-dcc`*
+
 4. Change directory to within the repository, and deploy two functions using the gcloud command-line tool:
 ```
 gcloud functions deploy <center_name>_create \
