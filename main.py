@@ -17,7 +17,6 @@ def syn_create(data, context):
     """
     key = data['name']
     print('Key: '+key)
-    #inclFolders = os.environ.get('foldersToSync', 'foldersToSync environment variable is not set.')
 
     gc_project = os.environ.get('gcProjectName', 'gcProjectName environment variable is not set.')
     username = get_secret('synapse_service_username', gc_project)
@@ -64,8 +63,6 @@ def syn_delete(data, context):
         context (google.cloud.functions.Context): Metadata of triggering event.
     """
     key = data['name']
-    #inclFolders = os.environ.get('foldersToSync', 'foldersToSync environment variable is not set.') 
-
     gc_project = os.environ.get('gcProjectName', 'gcProjectName environment variable is not set.')
     username = get_secret('synapse_service_username', gc_project)
     apiKey = get_secret('synapse_service_apikey', gc_project)
