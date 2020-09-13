@@ -45,6 +45,6 @@ gsutil cp -r gs://<your-bucket>/<folder-to-sync> gs://<your-bucket>/<folder-to-s
 
 ---
 ### To Test: 
-1. Place a file in one of the folders specified in `foldersToSync` environment variable
+1. Place a file in a folder within the bucket
 2. Check GC logs to see if the function was triggered and completed successfully
 3. Check Synapse project to see if filehandle was created
