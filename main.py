@@ -16,7 +16,6 @@ def syn_create(data, context):
         context (google.cloud.functions.Context): Metadata of triggering event.
     """
     key = data['name']
-    print('Key: '+key)
 
     gc_project = os.environ.get('gcProjectName', 'gcProjectName environment variable is not set.')
     username = get_secret('synapse_service_username', gc_project)
@@ -99,7 +98,6 @@ def get_parent_folder(syn, project_id, key):
             if folder_id == None:
                 folder_id = syn.store(synapseclient.Folder(name=f, parent=parent_id), forceVersion=False)['id']
             parent_id = folder_id
-        print(parent_id)
         return parent_id
     else:
         return None
