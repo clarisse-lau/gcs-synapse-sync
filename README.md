@@ -12,8 +12,7 @@ Google Cloud Function code to index files in GCS bucket by creating filehandles 
 ### gcloud CLI tool
 1. Enable the [Cloud Functions API](https://console.cloud.google.com/flows/enableapi?apiid=cloudfunctions&redirect=https://cloud.google.com/functions/quickstart&_ga=2.118113162.2081301619.1590113168-88580457.1590113168)
 2. Initialize the [Cloud SDK](https://cloud.google.com/sdk/docs)
-3. Clone this repository, and edit `env.yaml` to set the environment variable `synapseProjectId`:
-    - `synapseProjectId`: Synapse ID of project, a unique identifier with the format `syn12345678`
+3. Clone this repository, and edit `env.yaml` to set the environment variable `synapseProjectId`: the Synapse ID of the center's project, a unique identifier with the format `syn12345678`
 
     *`gcProjectName` variable should remain `htan-dcc`*
 
