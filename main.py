@@ -28,7 +28,7 @@ def syn_create(data, context):
         project_id = os.environ.get('synapseProjectId', 'synapseProjectId environment variable is not set.')
         parent = get_parent_folder(syn, project_id, key)
         if parent == None:
-            return
+            return  # Do not sync files at the root level
         
         contentmd5 = base64.b64decode(data['md5Hash']).hex()
         filename = os.path.basename(key)
@@ -72,10 +72,12 @@ def syn_delete(data, context):
     if key[0].isdigit() == False:
         filename = os.path.basename(key)
         project_id = os.environ.get('synapseProjectId', 'Specified environment variable is not set.')
-        parent_id = get_parent_folder(syn, project_id, key)
+        
+        parent_id = get_parent_folder(syn, project_id, key, False)
         if parent_id == None:
             return
-        elif not filename:
+
+        if not filename:   # Object is a folder
             syn.delete(parent_id)
         else:
             file_id = syn.findEntityId(filename, parent_id)
@@ -87,7 +89,7 @@ def get_secret(secret_name, gc_project_name):
     response = client.access_secret_version(resource_name)
     return response.payload.data.decode('UTF-8')
 
-def get_parent_folder(syn, project_id, key):
+def get_parent_folder(syn, project_id, key, create_folder=True):
     parent_id = project_id
     folders = key.split('/')
     folders.pop(-1)
@@ -96,8 +98,10 @@ def get_parent_folder(syn, project_id, key):
         for f in folders:
             folder_id = syn.findEntityId(f, parent_id)
             if folder_id == None:
+                if not create_folder:
+                    return None
+                
                 folder_id = syn.store(synapseclient.Folder(name=f, parent=parent_id), forceVersion=False)['id']
             parent_id = folder_id
-        return parent_id
-    else:
-        return None
+    
+    return parent_id
