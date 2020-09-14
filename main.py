@@ -16,18 +16,17 @@ def syn_create(data, context):
         context (google.cloud.functions.Context): Metadata of triggering event.
     """
     key = data['name']
-
     gc_project = os.environ.get('gcProjectName', 'gcProjectName environment variable is not set.')
+    
     username = get_secret('synapse_service_username', gc_project)
     apiKey = get_secret('synapse_service_apikey', gc_project)
-
     syn = synapseclient.Synapse()
     syn.login(email=username, apiKey=apiKey)
 
     if key[0].isdigit() == False: 
         project_id = os.environ.get('synapseProjectId', 'synapseProjectId environment variable is not set.')
         parent = get_parent_folder(syn, project_id, key)
-        if parent == None:
+        if parent == project_id:
             return  # Do not sync files at the root level
         
         contentmd5 = base64.b64decode(data['md5Hash']).hex()
@@ -63,9 +62,9 @@ def syn_delete(data, context):
     """
     key = data['name']
     gc_project = os.environ.get('gcProjectName', 'gcProjectName environment variable is not set.')
+    
     username = get_secret('synapse_service_username', gc_project)
     apiKey = get_secret('synapse_service_apikey', gc_project)
-
     syn = synapseclient.Synapse()
     syn.login(email=username, apiKey=apiKey)
     
