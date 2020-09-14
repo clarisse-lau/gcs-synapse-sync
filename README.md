@@ -12,9 +12,7 @@ Google Cloud Function code to index files in GCS bucket by creating filehandles 
 ### gcloud CLI tool
 1. Enable the [Cloud Functions API](https://console.cloud.google.com/flows/enableapi?apiid=cloudfunctions&redirect=https://cloud.google.com/functions/quickstart&_ga=2.118113162.2081301619.1590113168-88580457.1590113168)
 2. Initialize the [Cloud SDK](https://cloud.google.com/sdk/docs)
-3. Clone this repository, and edit `env.yaml` to set two center-specific environment variables:
-    - `synapseProjectId`: Synapse ID of project, a unique identifier with the format `syn12345678`
-    - `foldersToSync`: A comma separated list of folders in bucket to be synchronized to Synapse
+3. Clone this repository, and edit `env.yaml` to set the environment variable `synapseProjectId`: the Synapse ID of the center's project, a unique identifier with the format `syn12345678`
 
     *`gcProjectName` variable should remain `htan-dcc`*
 
@@ -47,6 +45,6 @@ gsutil cp -r gs://<your-bucket>/<folder-to-sync> gs://<your-bucket>/<folder-to-s
 
 ---
 ### To Test: 
-1. Place a file in one of the folders specified in `foldersToSync` environment variable
+1. Place a file in a folder within the bucket (folder names may not begin with a number)
 2. Check GC logs to see if the function was triggered and completed successfully
 3. Check Synapse project to see if filehandle was created
