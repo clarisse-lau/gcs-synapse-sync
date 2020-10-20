@@ -45,7 +45,7 @@ def syn_create(data, context):
         if parent == project_id:
             return  # Do not sync files at the root level
         
-        contentmd5 = base64.b64decode(data['md5Hash']).hex()
+        contentmd5 = get_md5(data)
         filename = os.path.basename(key)
         bucket = data['bucket']
         file_id = syn.findEntityId(filename, parent)
@@ -103,6 +103,14 @@ def get_secret(secret_name, gc_project_name):
     resource_name = f"projects/{gc_project_name}/secrets/{secret_name}/versions/latest"
     response = client.access_secret_version(resource_name)
     return response.payload.data.decode('UTF-8')
+
+def get_md5(data):
+    try: 
+        md5 = base64.b64decode(data['md5Hash']).hex()
+    except:
+        md5 = base64.b64decode(data['metadata']['content-md5']).hex()
+
+    return md5
 
 def get_parent_folder(syn, project_id, key, create_folder=True):
     parent_id = project_id

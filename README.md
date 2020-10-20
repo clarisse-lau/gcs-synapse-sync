@@ -36,6 +36,13 @@ gcloud functions deploy <center_name>_delete \
 ```
 
 ---
+For large files, parallel composite uploads may be enabled for faster upload speeds. Please note that if this is done, you must provide a base-64 encoded MD5 as a metadata tag `content-md5` for each file upon upload (see example below). In addition, users who download files uploaded as composite objects must have a compiled crcmod installed.
+
+```
+gsutil -h x-goog-meta-content-md5:<md5> cp <file> gs://<MyBucket>/<MyFolder>/
+```
+
+---
 ### Sync Existing Files
 To sync files already in a bucket, complete the setup and deployment steps above, then run the following command with your bucket and folder name. This will effectively "touch" all files within that folder and trigger the cloud function to sync the files to Synapse:
 
