@@ -88,16 +88,16 @@ def get_story_json(bucket_client,bucket,filename,prefix):
 
 def create_instance(gc_project, input_json, input_tiff, filepath):
     zone = os.environ.get('zone', 'zone environment variable is not set.')
-    machine_type = os.environ.get('machineType', 'machineType environment variable is not set.')
+    region = '-'.join(zone.split('-')[:-1])
 
+    machine_name = "minerva-batch-"+re.sub('[^0-9a-zA-Z]+', '-', input_json)
     docker_image = os.environ.get('dockerImage', 'dockerImage environment variable is not set.')
-    gce_container = "spec:\n  containers:\n    - name: minerva-test-1\n      image: '"+docker_image+"'\n      stdin: false\n      tty: false\n  restartPolicy: Always\n\n# This container declaration format is not public API and may change without notice. Please\n# use gcloud command-line tool or Google Cloud Console to run Containers on Google Compute Engine."
 
     vm_config = {
         "kind": "compute#instance",
-        "name": "minerva-batch-"+re.sub('[^0-9a-zA-Z]+', '-', input_json),
+        "name": machine_name,
         "zone": "projects/"+gc_project+"/zones/"+zone,
-        "machineType": "projects/"+gc_project+"/zones/"+zone+"/machineTypes/"+machine_type,
+        "machineType": "projects/"+gc_project+"/zones/"+zone+"/machineTypes/e2-highcpu-8",
         "displayDevice": {
             "enableDisplay": False
         },
@@ -106,7 +106,7 @@ def create_instance(gc_project, input_json, input_tiff, filepath):
             "items": [
                 {
                     "key": "gce-container-declaration",
-                    "value": gce_container
+                    "value": "spec:\n  containers:\n    - name: minerva-test-1\n      image: '"+docker_image+"'\n      stdin: false\n      tty: false\n  restartPolicy: Always\n\n# This container declaration format is not public API and may change without notice. Please\n# use gcloud command-line tool or Google Cloud Console to run Containers on Google Compute Engine."
                 },
                 {
                     "key": "google-logging-enabled",
@@ -138,7 +138,7 @@ def create_instance(gc_project, input_json, input_tiff, filepath):
                 "autoDelete": True,
                 "deviceName": "minerva-instance-1",
                 "initializeParams": {
-                    "sourceImage": "projects/cos-cloud/global/images/cos-stable-89-16108-403-15",
+                    "sourceImage": "projects/cos-cloud/global/images/cos-stable-89-16108-403-22",
                     "diskType": "projects/"+gc_project+"/zones/"+zone+"/diskTypes/pd-balanced",
                     "diskSizeGb": "150"
                 },
@@ -149,7 +149,7 @@ def create_instance(gc_project, input_json, input_tiff, filepath):
         "networkInterfaces": [
             {
                 "kind": "compute#networkInterface",
-                "subnetwork": "projects/"+gc_project+"/regions/"+zone+"/subnetworks/default",
+                "subnetwork": "projects/"+gc_project+"/regions/"+region+"/subnetworks/default",
                 "accessConfigs": [
                     {
                         "kind": "compute#accessConfig",
@@ -163,7 +163,7 @@ def create_instance(gc_project, input_json, input_tiff, filepath):
         ],
         "description": "",
         "labels": {
-            "container-vm": "cos-stable-89-16108-403-15"
+            "container-vm": "cos-stable-89-16108-403-22"
         },
         "scheduling": {
             "preemptible": False,
@@ -177,7 +177,7 @@ def create_instance(gc_project, input_json, input_tiff, filepath):
         },
         "serviceAccounts": [
             {
-                "email": "compute-execute-batch-job@"+gc_project".iam.gserviceaccount.com",
+                "email": "compute-execute-batch-job@"+gc_project+".iam.gserviceaccount.com",
                 "scopes": [
                     "https://www.googleapis.com/auth/cloud-platform"
                 ]
@@ -193,6 +193,7 @@ def create_instance(gc_project, input_json, input_tiff, filepath):
         }
     }
 
+    print('Creating instance {}'.format(machine_name))
     compute.instances().insert(project=gc_project,zone=zone,body=vm_config).execute()
 
 
