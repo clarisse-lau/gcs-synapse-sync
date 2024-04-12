@@ -1,6 +1,6 @@
 # gcs-synapse-sync
 
-Create a Google Storage Bucket and compatible Google Cloud Function to index bucket files to Synapse. 
+Creates a Google Storage Bucket configured according to [Synapse Custom Storage Locations](https://help.synapse.org/docs/Custom-Storage-Locations.2048327803.html#CustomStorageLocations-SettingupanExternalGoogleCloudStorageBucket) requirements, and a compatible Google Cloud Function to index bucket files to Synapse. 
 
 ### Requirements
 - Python 3.10+
@@ -9,6 +9,7 @@ Create a Google Storage Bucket and compatible Google Cloud Function to index buc
 You must have access to deploy resources in the HTAN Google Cloud Project, `htan-dcc`. Please contact an owner of `htan-dcc` to request access (Owners in 2024: Clarisse Lau, Vesteinn Thorsson, William Longabaugh, ISB)
 
 ### Getting started
+- Create a new Synapse project, and give `synapse-service-HTAN-lambda` edit & delete access to the project
 - Configure a custom [IAM Role](https://cloud.google.com/iam/docs/roles-overview#custom) with the following permissions:
 
 ```
@@ -19,10 +20,9 @@ You must have access to deploy resources in the HTAN Google Cloud Project, `htan
 - storage.objects.get
 - storage.objects.list
 ```
+- Create secret `synapse_service_pat` in [Secret Manager](https://cloud.google.com/secret-manager/docs) containing a `synapse-service-HTAN-lambda` auth token
 
-- Create a [Synapse Auth Token](https://help.synapse.org/docs/Managing-Your-Account.2055405596.html#ManagingYourAccount-PersonalAccessTokens) secret in [Secret Manager](https://cloud.google.com/secret-manager/docs)
-
-## Deployment
+## Deploy resources
 
 ```
 terraform init
@@ -30,6 +30,10 @@ terraform plan
 terraform apply
 ```
 
+## Set Google bucket as Synapse Upload Location
+Configure the new Google bucket as the upload location for your Synapse project, according to https://help.synapse.org/docs/Custom-Storage-Locations.2048327803.html#CustomStorageLocations-SetGoogleCloudBucketasUploadLocation 
+
+**NOTE**: this step must be performed by the `synapse-service-HTAN-lambda` account
 
 ---
 ### To Use:
