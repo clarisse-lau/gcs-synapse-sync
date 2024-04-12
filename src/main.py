@@ -17,7 +17,6 @@ limitations under the License.
 import json
 import os
 import re
-import sys
 import uuid
 import base64
 from urllib.parse import unquote_plus
@@ -29,7 +28,6 @@ from google.cloud import storage
 import googleapiclient.discovery
 
 storage_client = storage.Client()
-compute = googleapiclient.discovery.build('compute', 'v1')
 
 
 def obj_add(data, context):
@@ -40,33 +38,13 @@ def obj_add(data, context):
         context (google.cloud.functions.Context): Metadata of triggering event.
     """
     key = data['name']
-    print('File added: '+key)
     bucket = data['bucket']
-
-    bucket_client = storage_client.bucket(bucket)
-
     filename = os.path.basename(key)
-    dirname = os.path.dirname(key)
-    filepath = bucket+'/'+dirname
-    prefix='minerva'
 
     gc_project = os.environ.get('gcProjectName', 'gcProjectName environment variable is not set.')
 
-    if dirname == prefix and key.endswith('story.json'):
-        input_tiff = tiff_in_file(bucket_client,key)
-        if storage.Blob(bucket=bucket_client, name=dirname+'/'+input_tiff).exists(storage_client) == True:
-            create_instance(gc_project, filename, input_tiff, filepath)
-        else:
-            print("{} image not found.".format(input_tiff))
-
-    elif dirname == prefix and (key.endswith('ome.tif') or key.endswith('ome.tiff')):
-        story_json = get_story_json(bucket_client,bucket,filename,prefix)
-        for json in story_json:
-            input_json = os.path.basename(json)
-            create_instance(gc_project, input_json, filename, filepath)
-
-    sync_to_synapse(data,bucket,filename,key,gc_project)
-
+    sync_to_synapse(data, bucket, filename, key, gc_project)
+    print('File added: '+key)
 
 def sync_to_synapse(data,bucket,filename,key,gc_project):
     syn = synapse_login(gc_project)
@@ -83,7 +61,7 @@ def sync_to_synapse(data,bucket,filename,key,gc_project):
         storage_id = syn.restGET("/projectSettings/"+project_id+"/type/upload")['locations'][0]
 
         if file_id != None:
-            targetmd5 = syn.get(file_id, downloadFile=False)['md5'];
+            targetmd5 = syn.get(file_id, downloadFile=False)['md5']
 
         if file_id == None or contentmd5 != targetmd5:
             size = data['size']
@@ -127,10 +105,9 @@ def obj_delete(data, context):
             syn.delete(file_id)
 
 def synapse_login(gc_project_name):
-    username = get_secret('synapse_service_username', gc_project_name)
-    apiKey = get_secret('synapse_service_apikey', gc_project_name)
+    syn_sa_pat = get_secret('synapse_service_pat', gc_project_name)
     syn = synapseclient.Synapse()
-    syn.login(email=username, apiKey=apiKey)
+    syn.login(authToken = syn_sa_pat)
 
     return syn
 

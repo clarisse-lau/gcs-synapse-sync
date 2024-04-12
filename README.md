@@ -2,6 +2,10 @@
 
 Google Cloud Function code to index files in GCS bucket by creating filehandles on Synapse, triggered by file changes to bucket.
 
+### Prerequisites
+Configure Service account
+htan-dcc: gcs-synapse-sync
+
 #### Minerva Stories
 This function will also render images for [Minerva Story](https://www.cycif.org/software/minerva) visualization, generating a directory containing the JPEG image pyramid and exhibit files suitable for hosting with Minerva Stories (See [below](#minerva-story) for usage details).
 
