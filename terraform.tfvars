@@ -1,4 +1,4 @@
-center_bucket = "htan-center-e"
+center_bucket = "htan-center-test"
 synapse_project_id = "syn21972077"
 
 project_id = "htan-dcc"

@@ -33,9 +33,7 @@ resource "google_storage_bucket" "static" {
 }
 }
 
-# Upload a text file as an object
-# to the storage bucket
-
+# Upload owner.txt files to the bucket
 resource "google_storage_bucket_object" "default" {
  name         = "owner.txt"
  source       = "./owner.txt"
@@ -43,6 +41,7 @@ resource "google_storage_bucket_object" "default" {
  bucket       = google_storage_bucket.static.id
 }
 
+# Give Synapse service account permission to access bucket
 resource "google_storage_bucket_iam_member" "member" {
   bucket = google_storage_bucket.static.name
   role   = "roles/storage.legacyBucketReader"
